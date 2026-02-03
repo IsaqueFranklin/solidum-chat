@@ -51,5 +51,5 @@ def check_embedding_status(file_id):
             return False
         
 if __name__ == "__main__":
-    test_file_id = "32d2a47c-192f-4100-943e-711d6e8efc2c"
+    test_file_id = "91fc3991-315a-431a-87cd-97917be09421"
     check_embedding_status(test_file_id)
