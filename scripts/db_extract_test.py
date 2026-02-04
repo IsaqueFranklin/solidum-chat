@@ -19,48 +19,48 @@ def limpo(valor):
 def formatar_docente(group):
     row = group.iloc[0].to_dict()  # Pegamos a primeira linha do grupo para acessar os dados do docente
 
-    partes = [f"DADOS DO DOCENTE: {row['nome_docente']}"]
+    nome = str(row['nome_docente'])
+    partes = [f"DADOS DO DOCENTE: {nome}"]
 
     if limpo(row.get('departamento_docente')):
         depto_docente = str(row.get('departamento_docente'))
-        partes.append(f"Departamento de {depto_docente}.")
+        partes.append(f"O docente {nome} é do Departamento de {depto_docente}.")
 
     if limpo(row.get('unidade_docente')):
         unidade_docente = str(row.get('unidade_docente'))
-        partes.append(f"Unidade acadêmica de(a) {unidade_docente}.")
+        partes.append(f"O docente {nome} é da Unidade acadêmica de(a) {unidade_docente}.")
 
     if limpo(row.get('docente_area_the')):
         area_the_docente = str(row.get('docente_area_the'))
-        partes.append(f"Área THE: {area_the_docente}.")
+        partes.append(f"O docente {nome} é da Área THE: {area_the_docente}.")
 
     if limpo(row.get('docente_grande_area')):
         grande_area_docente = str(row.get('docente_grande_area'))
-        partes.append(f"Pertence à grande área de {grande_area_docente}.")
+        partes.append(f"O docente {nome} pertence à grande área de {grande_area_docente}.")
 
     if limpo(row.get('docente_area')):
         area_docente = str(row.get('docente_area', 'None'))
-        partes.append(f"Pesquisa sobre {area_docente}.")
-
+        partes.append(f"O docente {nome} pesquisa sobre {area_docente}.")
 
     if limpo(row.get('docente_colegio_capes')):
         colegio_capes_docente = str(row.get('docente_colegio_capes'))
-        partes.append(f"Pertence ao colégio acadêmico CAPES {colegio_capes_docente}.")
+        partes.append(f"O docente {nome} pertence ao colégio acadêmico CAPES {colegio_capes_docente}.")
 
     if limpo(row.get('docente_nivel_bolsa')):
         nivel_bolsa_docente = str(row.get('docente_nivel_bolsa'))
-        partes.append(f"Nível de bolsa no CNPQ: {nivel_bolsa_docente}.")
+        partes.append(f"O docente {nome} tem nível de bolsa no CNPQ: {nivel_bolsa_docente}.")
 
     if limpo(row.get('docente_area_bolsa')):
         area_bolsa_docente = str(row.get('docente_area_bolsa'))
-        partes.append(f"Área de bolsa do CNPQ: {area_bolsa_docente}.")
+        partes.append(f"O docente {nome} tem área de bolsa do CNPQ: {area_bolsa_docente}.")
 
     if limpo(row.get('docente_area_atuacao')):
         area_atuacao_docente = str(row.get('docente_area_atuacao'))
-        partes.append(f"Área de atuação de pesquisa: {area_atuacao_docente}.")
+        partes.append(f"O docente {nome} tem área de atuação de pesquisa: {area_atuacao_docente}.")
 
     especs = [str(e) for e in group['docente_especialidade'].dropna().unique() if limpo(e)]
     if especs:
-        partes.append(f"Especialidades de pesquisa: {', '.join(especs)}.")
+        partes.append(f"O docente {nome} é tem especialidades de pesquisa: {', '.join(especs)}.")
 
     especs = group['docente_especialidade'].dropna().unique()
     

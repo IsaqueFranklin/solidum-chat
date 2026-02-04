@@ -28,6 +28,6 @@ def link_to_knowledge_base(knowledge_id, file_id):
 
 if __name__ == "__main__":
     KNOWLEDGE_ID = "7a9224da-361a-468d-aaa3-e213f9d2c5e4"
-    FILE_ID = "25ea9a7d-b17b-4400-9eea-0b83e476eb5d"
+    FILE_ID = "6476714d-4332-46b3-a665-34fae43be443"
     
     link_to_knowledge_base(KNOWLEDGE_ID, FILE_ID)
