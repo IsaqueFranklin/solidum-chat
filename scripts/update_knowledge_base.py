@@ -27,7 +27,7 @@ def link_to_knowledge_base(knowledge_id, file_id):
         return None
 
 if __name__ == "__main__":
-    KNOWLEDGE_ID = "4aa81cc8-8f1a-454e-96e0-a94c5fb11401"
-    FILE_ID = "91fc3991-315a-431a-87cd-97917be09421"
+    KNOWLEDGE_ID = "7a9224da-361a-468d-aaa3-e213f9d2c5e4"
+    FILE_ID = "35efbfb8-1aff-4248-86b7-a0952666ea49"
     
     link_to_knowledge_base(KNOWLEDGE_ID, FILE_ID)

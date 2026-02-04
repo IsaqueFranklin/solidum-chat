@@ -15,23 +15,84 @@ def extract_professors():
         # O Pandas lê o resultado da consulta SQL diretamente em um DataFrame
         df = pd.read_sql_query(query, connection)
 
+    # Agrupar por id_docente para consolidar especialidades
+    print("Achatando dados e consolidando especialidades...")
+    df_final = df.groupby('id_docente', group_keys=True).apply(formatar_docente, include_groups=False).reset_index()
+    
     # Criando o cerébro do RAG
     # Ao invés de colunas soltas, conectamos tudo em uma única coluna de texto
-    df['conteudo'] = df.apply(lambda row: 
-        f"Professor(a): {row['nome_docente']}, do departamento de {row['departamento_docente']}, da unidade {row['unidade_docente']}." +
-        f" Atua na área de {row['docente_area_the']} e pesquisa sobre {row['docente_area']}." +
-        f" Pertence à grande área de {row['docente_grande_area']} e ao colégio acadêmico {row['docente_colegio_capes']}." +
-        f" Nível de bolsa no CNPQ: {row['docente_nivel_bolsa']}, área de bolsa do CNPQ: {row['docente_area_bolsa']}." +
-        f" Área de atuação de pesquisa: {row['docente_area_atuacao']} e especialidade: {row['docente_especialidade']}.",
-        axis=1                          
+    df_final[['conteudo', 'departamento_docente', 'id_docente']].to_csv(
+        'docentes_rag.csv',
+        index=False,
+        header=False,
+        encoding='utf-8',
+        quoting=csv.QUOTE_ALL
     )
 
-    # Dessa forma definimos as colunas finais, onde o conteudo serão os embeddings e o restante metadados
-    final_columns = ['conteudo', 'departamento_docente', 'id_docente', 'docente_especialidade']
+    print(F"Arquivo docentes_rag.csv gerado com sucesso! Contém {len(df_final)} docentes únicos.")
 
-    # Salvamos apenas a coluna formatada para o OpenWebUI
-    df[final_columns].to_csv('docentes_rag.csv', index=False, header=False)
-    print("Arquivo #docentes gerado com sucesso!")
+def formatar_docente(group):
+    row = group.iloc[0].to_dict()  # Pegamos a primeira linha do grupo para acessar os dados do docente
+
+    partes = [f"DADOS DO DOCENTE: {row['nome_docente']}"]
+
+    if limpo(row.get('departamento_docente')):
+        depto_docente = str(row.get('departamento_docente'))
+        partes.append(f"Departamento de {depto_docente}.")
+
+    if limpo(row.get('unidade_docente')):
+        unidade_docente = str(row.get('unidade_docente'))
+        partes.append(f"Unidade acadêmica de(a) {unidade_docente}.")
+
+    if limpo(row.get('docente_area_the')):
+        area_the_docente = str(row.get('docente_area_the'))
+        partes.append(f"Área THE: {area_the_docente}.")
+
+    if limpo(row.get('docente_grande_area')):
+        grande_area_docente = str(row.get('docente_grande_area'))
+        partes.append(f"Pertence à grande área de {grande_area_docente}.")
+
+    if limpo(row.get('docente_area')):
+        area_docente = str(row.get('docente_area', 'None'))
+        partes.append(f"Pesquisa sobre {area_docente}.")
+
+
+    if limpo(row.get('docente_colegio_capes')):
+        colegio_capes_docente = str(row.get('docente_colegio_capes'))
+        partes.append(f"Pertence ao colégio acadêmico CAPES {colegio_capes_docente}.")
+
+    if limpo(row.get('docente_nivel_bolsa')):
+        nivel_bolsa_docente = str(row.get('docente_nivel_bolsa'))
+        partes.append(f"Nível de bolsa no CNPQ: {nivel_bolsa_docente}.")
+
+    if limpo(row.get('docente_area_bolsa')):
+        area_bolsa_docente = str(row.get('docente_area_bolsa'))
+        partes.append(f"Área de bolsa do CNPQ: {area_bolsa_docente}.")
+
+    if limpo(row.get('docente_area_atuacao')):
+        area_atuacao_docente = str(row.get('docente_area_atuacao'))
+        partes.append(f"Área de atuação de pesquisa: {area_atuacao_docente}.")
+
+    especs = [str(e) for e in group['docente_especialidade'].dropna().unique() if limpo(e)]
+    if especs:
+        partes.append(f"Especialidades de pesquisa: {', '.join(especs)}.")
+
+    especs = group['docente_especialidade'].dropna().unique()
+    
+    content = " | ".join(partes)
+    
+    return pd.Series({
+        'conteudo': content,
+        'departamento_docente': row.get('departamento_docente', 'UFMG'),
+    })
+
+# Filtro de campos irrelevantes para não confundir o RAG
+def limpo(valor):
+    if valor is None:
+        return False
+    v = str(valor).strip().lower()
+    # Retorna True se o valor for útil (NÃO estiver na lista de lixo)
+    return v not in ['none', 'desconhecido', 'nan', 'null', '']
 
 if __name__ == "__main__":
     extract_professors()
