@@ -71,7 +71,7 @@ def upload_openwebui(caminho_csv, name_tag, collection_name):
 if __name__ == "__main__":
     deleted = delete_collection('docentes')
     if deleted:
-        final = upload_openwebui('docentes_prpq.md', 'Docentes RAG', 'docentes')
+        final = upload_openwebui('docentes_prpq.md', 'Docentes', 'docentes')
         print(final)
     else:
         print("Falha ao limpar coleção. Upload cancelado.")

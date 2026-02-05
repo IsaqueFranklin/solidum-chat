@@ -7,6 +7,7 @@ load_dotenv()
 
 URL_BASE = os.getenv("OPEN_WEB_URL_BASE")
 TOKEN = os.getenv("OPEN_WEB_UI_API_KEY")
+KNOWLEDGE_BASE_ID = os.getenv("KNOWLEDGE_BASE_ID")
 
 def link_to_knowledge_base(knowledge_id, file_id):
     url = f"{URL_BASE}/knowledge/{knowledge_id}/file/add"
@@ -27,7 +28,7 @@ def link_to_knowledge_base(knowledge_id, file_id):
         return None
 
 if __name__ == "__main__":
-    KNOWLEDGE_ID = "7a9224da-361a-468d-aaa3-e213f9d2c5e4"
-    FILE_ID = "6476714d-4332-46b3-a665-34fae43be443"
+    KNOWLEDGE_ID = KNOWLEDGE_BASE_ID
+    FILE_ID = "ac6a83f2-7adc-4b2b-9d17-a7f87e8cd4a9"
     
     link_to_knowledge_base(KNOWLEDGE_ID, FILE_ID)
