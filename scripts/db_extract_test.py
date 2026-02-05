@@ -16,54 +16,50 @@ def limpo(valor):
 def formatar_docente(group):
     row = group.iloc[0].to_dict()  # Pegamos a primeira linha do grupo para acessar os dados do docente
 
-    nome = str(row['nome_docente'])
-    partes = [f"DOCENTE: {nome}"]
-
-    if limpo(row.get('nome_docente')):
-        nome_docente = str(row.get('nome_docente'))
-        partes.append(f"NOME COMPLETO: {nome_docente}")
+    partes = ['']
 
     if limpo(row.get('departamento_docente')):
         depto_docente = str(row.get('departamento_docente'))
-        partes.append(f"De: {depto_docente}")
+        partes.append(f"De: {depto_docente}\n")
 
     if limpo(row.get('unidade_docente')):
         unidade_docente = str(row.get('unidade_docente'))
-        partes.append(f"Unidade: {unidade_docente}")
+        partes.append(f"Unidade: {unidade_docente}\n")
 
     if limpo(row.get('docente_area_the')):
         area_the_docente = str(row.get('docente_area_the'))
-        partes.append(f"Área THE: {area_the_docente}")
+        partes.append(f"Área THE: {area_the_docente}\n")
 
     if limpo(row.get('docente_grande_area')):
         grande_area_docente = str(row.get('docente_grande_area'))
-        partes.append(f"Grande área: {grande_area_docente}")
+        partes.append(f"Grande área: {grande_area_docente}\n")
 
     if limpo(row.get('docente_area')):
         area_docente = str(row.get('docente_area', 'None'))
-        partes.append(f"Pesquisa sobre: {area_docente}")
+        partes.append(f"Pesquisa sobre: {area_docente}\n")
 
     if limpo(row.get('docente_colegio_capes')):
         colegio_capes_docente = str(row.get('docente_colegio_capes'))
-        partes.append(f"Colégio CAPES: {colegio_capes_docente}")
+        partes.append(f"Colégio CAPES: {colegio_capes_docente}\n")
 
     if limpo(row.get('docente_nivel_bolsa')):
         nivel_bolsa_docente = str(row.get('docente_nivel_bolsa'))
-        partes.append(f"Nível de bolsa no CNPQ: {nivel_bolsa_docente}")
+        partes.append(f"Nível de bolsa no CNPQ: {nivel_bolsa_docente}\n")
 
     if limpo(row.get('docente_area_bolsa')):
         area_bolsa_docente = str(row.get('docente_area_bolsa'))
-        partes.append(f"Área de bolsa do CNPQ: {area_bolsa_docente}")
+        partes.append(f"Área de bolsa do CNPQ: {area_bolsa_docente}\n")
+
     if limpo(row.get('docente_area_atuacao')):
         area_atuacao_docente = str(row.get('docente_area_atuacao'))
-        partes.append(f"área de atuação: {area_atuacao_docente}")
+        partes.append(f"área de atuação: {area_atuacao_docente}\n")
 
     especs = [str(e) for e in group['docente_especialidade'].dropna().unique() if limpo(e)]
     especs_top3 = especs[:3]
     if especs:
         # Une as especialidades em uma string única
         texto_especs = ', '.join(especs_top3)
-        partes.append(f"Especialidades: {texto_especs}.")
+        partes.append(f"Especialidades: {texto_especs}\n")
     
     content = " | ".join(partes)
     
@@ -97,14 +93,12 @@ def export_to_markdown(df_final):
     with open(file_path, "w", encoding="utf-8") as f:
         for _, row in df_final.iterrows():
             # Cabeçalho de nível 2 isola o docente para o RAG
-            f.write(f"## Docente: {row['nome_docente']}\n\n")
-            
-            # O conteúdo denso que você formatou
-            f.write(f"{row['conteudo']}\n\n")
-            
-            # Metadados úteis para o LLM citar
-            f.write(f"**ID Registro:** {row['id_docente']} | **Departamento:** {row['departamento_docente']}\n")
-            
+            f.write(f"## {row['nome_docente']}")
+
+            f.write("\n\n")
+            # Conteúdo do docente
+            f.write(row['conteudo'])
+            f.write(f"\n\n **ID Registro:** {row['id_docente']}\n **Departamento:** {row['departamento_docente']}\n")
             # Linha horizontal: O separador definitivo de contexto
             f.write("\n---\n\n")
             
